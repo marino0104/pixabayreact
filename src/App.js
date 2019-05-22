@@ -8,7 +8,8 @@ class App extends Component{
     termino:'',
     imagenes:[],
     pagina:'',
-    cargando:false
+    cargando:false,
+    totalPaginas:''
   }
   consultarAPI= async()=>{
     const {termino}=this.state;
@@ -21,9 +22,11 @@ class App extends Component{
           return respuesta.json()
         })
         .then(resultado=>{
+            let totalPaginas=Math.ceil(resultado.totalHits/30)
             this.setState({
               imagenes:resultado.hits,
-              cargando:false
+              cargando:false,
+              totalPaginas
             })
         })
   }
@@ -48,6 +51,8 @@ class App extends Component{
   }
   paginaSiguiente=()=>{
     let pagina=this.state.pagina;
+    let totalPaginas=this.state.totalPaginas;
+    if(pagina===totalPaginas) return null;
     pagina +=1;
     this.setState({
       pagina
@@ -73,6 +78,8 @@ class App extends Component{
                   imagenes={this.state.imagenes}
                   paginaAnterior={this.paginaAnterior}
                   paginaSiguiente={this.paginaSiguiente}
+                  pagina={this.state.pagina}
+                  totalPaginas={this.state.totalPaginas}
                 />
     }
     return(
